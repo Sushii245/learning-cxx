@@ -12,40 +12,64 @@
 class DynFibonacci {
     size_t *cache;
     int cached;
+    int capacity;
 
 public:
-    // TODO: 实现动态设置容量的构造器
-    DynFibonacci(int capacity): cache(new ?), cached(?) {}
+        DynFibonacci(int cap)
+        : cache(new size_t[cap]{}), cached(1), capacity(cap) {
+        ASSERT(capacity >= 2, "capacity should be at least 2");
+        cache[0] = 0;
+        cache[1] = 1;
+    }
 
-    // TODO: 实现移动构造器
-    DynFibonacci(DynFibonacci &&) noexcept = delete;
+    
+    DynFibonacci(DynFibonacci &&other) noexcept
+        : cache(other.cache), cached(other.cached), capacity(other.capacity) {
+        other.cache = nullptr;
+        other.cached = 0;
+        other.capacity = 0;
+    }
 
-    // TODO: 实现移动赋值
-    // NOTICE: ⚠ 注意移动到自身问题 ⚠
-    DynFibonacci &operator=(DynFibonacci &&) noexcept = delete;
+    // 移动赋值
+    DynFibonacci &operator=(DynFibonacci &&other) noexcept {
+        if (this == &other) return *this;
 
-    // TODO: 实现析构器，释放缓存空间
-    ~DynFibonacci();
+        delete[] cache;
 
-    // TODO: 实现正确的缓存优化斐波那契计算
+        cache = other.cache;
+        cached = other.cached;
+        capacity = other.capacity;
+
+        other.cache = nullptr;
+        other.cached = 0;
+        other.capacity = 0;
+
+        return *this;
+    }
+
+    
+    ~DynFibonacci() {
+        delete[] cache;
+    }
+
     size_t operator[](int i) {
-        for (; false; ++cached) {
-            cache[cached] = cache[cached - 1] + cache[cached - 2];
+        ASSERT(cache, "object moved");
+        ASSERT(i >= 0 && i < capacity, "i out of range");
+        for (; cached < i; ++cached) {
+            cache[cached + 1] = cache[cached] + cache[cached - 1];
         }
         return cache[i];
     }
 
-    // NOTICE: 不要修改这个方法
+    // ---- 不要修改以下两个方法 ----
     size_t operator[](int i) const {
         ASSERT(i <= cached, "i out of range");
         return cache[i];
     }
 
-    // NOTICE: 不要修改这个方法
-    bool is_alive() const {
-        return cache;
-    }
+    bool is_alive() const { return cache; }
 };
+
 
 int main(int argc, char **argv) {
     DynFibonacci fib(12);

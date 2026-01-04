@@ -1,4 +1,4 @@
-﻿#include "../exercise.h"
+#include "../exercise.h"
 #include <map>
 
 // READ: `std::map` <https://zh.cppreference.com/w/cpp/container/map>
@@ -6,13 +6,14 @@
 
 template<class k, class v>
 bool key_exists(std::map<k, v> const &map, k const &key) {
-    // TODO: 实现函数
+    return map.find(key) != map.end();
 }
 
 template<class k, class v>
 void set(std::map<k, v> &map, k key, v value) {
-    // TODO: 实现函数
+    map[key] = value;
 }
+
 
 // ---- 不要修改以下代码 ----
 int main(int argc, char **argv) {
